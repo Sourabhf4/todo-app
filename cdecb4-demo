@@ -1,2 +1,24 @@
-test
-this is test file
+pipeline {
+    agent any
+
+    stages {
+        stage('git-checkout') {
+            steps {
+                echo 'this is checkout stage '
+                git url:"https://github.com/Sourabhf4/todo-app.git" , branch:"main"
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'this is build  stage '
+                sh 'docker build -t todo:todo-${BUILD_NUMBER} .'
+            }
+        }
+        stage('Deployment') {
+            steps {
+                echo 'this is deploy stage '
+                sh 'docker run -d --name todo-${BUILD_NUMBER} -P todo:todo-${BUILD_NUMBER} '
+            }
+        }
+    }
+}
